@@ -1,10 +1,11 @@
 --[[
 	INSTA LEAVE
 	By Sami
-	Version 1.1 (Movable Button)
+	Version 2.0 (Stylish Movable Button)
 ]]
 
 local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 
 -- Create GUI
@@ -13,17 +14,51 @@ gui.Name = "InstaLeaveGui"
 gui.ResetOnSpawn = false
 gui.Parent = player:WaitForChild("PlayerGui")
 
--- Create button
+-- Create button frame
 local button = Instance.new("TextButton")
 button.Parent = gui
-button.Size = UDim2.new(0, 140, 0, 45)
-button.Position = UDim2.new(1, -150, 0, 20) -- top-right start
+button.Size = UDim2.new(0, 160, 0, 50)
+button.Position = UDim2.new(1, -180, 0, 30)
 button.AnchorPoint = Vector2.new(0, 0)
 button.Text = "Leave"
-button.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-button.TextColor3 = Color3.new(1, 1, 1)
+button.BackgroundColor3 = Color3.fromRGB(255, 100, 80)
+button.TextColor3 = Color3.fromRGB(255, 255, 255)
 button.TextScaled = true
 button.BorderSizePixel = 0
+button.AutoButtonColor = false -- we handle hover manually
+button.ZIndex = 2
+button.Font = Enum.Font.GothamBold
+
+-- Rounded corners
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = button
+
+-- Shadow
+local shadow = Instance.new("Frame")
+shadow.Size = UDim2.new(1, 6, 1, 6)
+shadow.Position = UDim2.new(0, -3, 0, -3)
+shadow.BackgroundColor3 = Color3.fromRGB(0,0,0)
+shadow.BackgroundTransparency = 0.5
+shadow.ZIndex = 1
+shadow.Parent = button
+local shadowCorner = Instance.new("UICorner")
+shadowCorner.CornerRadius = UDim.new(0, 12)
+shadowCorner.Parent = shadow
+
+-- Gradient
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(255,120,100)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255,70,60))}
+gradient.Rotation = 45
+gradient.Parent = button
+
+-- Hover effect
+button.MouseEnter:Connect(function()
+	button.BackgroundTransparency = 0.2
+end)
+button.MouseLeave:Connect(function()
+	button.BackgroundTransparency = 0
+end)
 
 -- Make button draggable
 local dragging = false
@@ -53,7 +88,7 @@ button.InputChanged:Connect(function(input)
 	end
 end)
 
-game:GetService("UserInputService").InputChanged:Connect(function(input)
+UserInputService.InputChanged:Connect(function(input)
 	if input == dragInput and dragging then
 		update(input)
 	end
